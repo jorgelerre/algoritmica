@@ -34,7 +34,6 @@ int MejorCompraVentaDyV(const vector<int> & v, int ini, int fin, int & dia_compr
       else if(v[i] < v[minimo])
         minimo = i;
     }
-    cout << "Max min hecho" << endl;
     //Calculamos ganancia, dia_compra y dia_venta
     for(int i = ini; i < fin-1; i++){     
 		  for(int j = i+1; j < fin; j++){
@@ -46,39 +45,45 @@ int MejorCompraVentaDyV(const vector<int> & v, int ini, int fin, int & dia_compr
         }
       }
     }
-    cout << "Ganancia hecho" << endl;
   }
   //Si el tamaño del trozo es 4 o más, dividimos y después combinamos soluciones
   else{
     int dia_compra_izq, dia_compra_dcha, dia_venta_izq, dia_venta_dcha, minimo_izq, minimo_dcha, maximo_izq, maximo_dcha, media;
     int ganancia_izq, ganancia_dcha, ganancia_comb, sol;
     //Dividimos el vector dado en dos trozos (lo más iguales posible)
-    media = (fin+ini)/2 + 1;
+    media = (fin+ini)/2;
     //Llamamos a la función de forma recursiva
     ganancia_izq  = MejorCompraVentaDyV(v, ini, media, dia_compra_izq,  dia_venta_izq,  minimo_izq,  maximo_izq );
     ganancia_dcha = MejorCompraVentaDyV(v, media, fin, dia_compra_dcha, dia_venta_dcha, minimo_dcha, maximo_dcha);
     //Combinamos soluciones
-    
+    //Guardamos el máximo y mínimo de todo el intervalo
     minimo = (minimo_izq < minimo_dcha) ? minimo_izq : minimo_dcha;
     maximo = (maximo_izq > maximo_dcha) ? maximo_izq : maximo_dcha;
    
-    ganancia_comb = v[maximo_dcha] - v[minimo_izq];
+   //Pasamos como solucion la compra-venta de mayor ganancia
+   
+   //Al juntar los trozos de vector puede surgir una nueva solución, que llamaremos "solución combinada"
+   //Esta se conforma con el mínimo valor del trozo izquierdo con el máximo valor del trozo derecho
+    ganancia_comb = v[maximo_dcha] - v[minimo_izq]; 
+    
+    //Si la solución combinada es la de mayor ganancia, la guardamos como solución final
     if(ganancia_comb > ganancia_izq && ganancia_comb > ganancia_dcha){
       solucion = ganancia_comb;
       dia_compra = minimo_izq;
       dia_venta = maximo_dcha;
     }
+    //Si la solución de la parte izquierda es la de mayor ganancia, la guardamos como solución final
     else if(ganancia_izq > ganancia_dcha){
       solucion = ganancia_izq;
       dia_compra = dia_compra_izq;
       dia_venta = dia_venta_izq;
     }
+    //Si la solución de la parte derecha es la de mayor ganancia, la guardamos como solución final
     else{
       solucion = ganancia_dcha;
       dia_compra = dia_compra_dcha;
       dia_venta = dia_venta_dcha;
     }
-   
   }
   
   return solucion;
@@ -91,10 +96,36 @@ int MejorCompraVentaDyV(const vector<int> & v, int & dia_compra, int & dia_venta
 }
 
 
-int main(){
+int main(int argc, char **argv){
 	int solucion, dia_compra, dia_venta;
-	
-	vector<int> v = {1, 2, 300, 4, 15, 0, 7, 20, 9, 0};
+  const int MAX = 10000000;
+	if(argc < 2){
+    cout << "Falta numero de elementos del vector." << endl;
+    exit(-1);
+  }
+  
+  //Obtenemos parámetro tam_vector
+  int tam_vector = atoi(argv[1]);
+  if(tam_vector > MAX){
+    tam_vector = MAX;
+  }
+
+	vector<int> v;
+  v.reserve(tam_vector);
+  for(int i = 0; i < tam_vector; i++){
+    int n = rand() % (tam_vector*50);
+    v.push_back(n);
+  }
+
+//Si son pocos elementos, mostramos el vector generado por pantalla para comprobar que 
+//la solucion es correcta
+  if(tam_vector < 20){
+    cout << "Vector generado: ";
+    for(int i = 0; i < tam_vector; i++){
+      cout << v[i] << " ";
+    }
+    cout << endl;
+  }
 	
 	solucion = MejorCompraVentaDyV(v, dia_compra, dia_venta);
 	
@@ -103,4 +134,5 @@ int main(){
 	 	 << "\tElemento maximo -> v[" << dia_venta << "]= " << v[dia_venta] << endl;
 	cout << "Ganancia = " << v[dia_venta] << " - " << v[dia_compra] << " = " << solucion << endl; 
 	
+  return 0;
 }
