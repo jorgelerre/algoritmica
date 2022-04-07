@@ -10,7 +10,7 @@ int MejorCompraVentaBasico(const vector<int> & v, int & maximo, int & minimo){
 	int solucion = INT_MIN;
 
 	for(int i = 0; i < v.size()-1; i++){
-		for(int j = i; j < v.size(); j++){
+		for(int j = i+1; j < v.size(); j++){
 			int ganancia = v[j]-v[i];
 			if(ganancia > solucion){
 				solucion = ganancia;
