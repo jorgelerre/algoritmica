@@ -57,8 +57,8 @@ int MejorCompraVentaDyV(const vector<int> & v, int ini, int fin, int & dia_compr
     ganancia_dcha = MejorCompraVentaDyV(v, media, fin, dia_compra_dcha, dia_venta_dcha, minimo_dcha, maximo_dcha);
     //Combinamos soluciones
     //Guardamos el máximo y mínimo de todo el intervalo
-    minimo = (minimo_izq < minimo_dcha) ? minimo_izq : minimo_dcha;
-    maximo = (maximo_izq > maximo_dcha) ? maximo_izq : maximo_dcha;
+    minimo = (v[minimo_izq] < v[minimo_dcha]) ? minimo_izq : minimo_dcha;
+    maximo = (v[maximo_izq] > v[maximo_dcha]) ? maximo_izq : maximo_dcha;
    
    //Pasamos como solucion la compra-venta de mayor ganancia
    
